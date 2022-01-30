@@ -20,16 +20,28 @@ let baseMaps = {
   "Satellite": satelliteStreets
 };
 
+// Create the earthquake layer for our map.
+let earthquakes = new L.layerGroup();
 
 // Create the map object with center, zoom level and default layer.
 let map = L.map('mapid', {
   center: [39.6, -98.5],
   zoom: 3,
-  layers: [streets]
+  layers: [streets, earthquakes]
 })
 
+
+
+
+// We define an object that contains the overlays.
+// This overlay will be visible all the time.
+let overlays = {
+  Earthquakes: earthquakes
+};
+
 // Pass our map layers into our layers control and add the layers control to the map.
-L.control.layers(baseMaps).addTo(map);
+L.control.layers(baseMaps, overlays, {
+  collapsed: false}).addTo(map);
 
 
 // Link to earthquake date URL
@@ -100,7 +112,7 @@ d3.json(earthquakeData).then(function (data) {
     onEachFeature: function (feature, layer) {
       layer.bindPopup("Magnitude: " + feature.properties.mag + "<br>Location: " + feature.properties.place);
     }
-  }).addTo(map);
+  }).addTo(earthquakes);
 });
 
 
